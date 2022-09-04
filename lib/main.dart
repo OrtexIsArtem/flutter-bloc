@@ -37,44 +37,61 @@ class MyHomePage extends StatelessWidget {
     final counterBloc = BlocProvider.of<CounterBloc>(context);
 
     return Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () {
-              counterBloc.add(CounterIncEvent());
-            },
-            icon: const Icon(Icons.plus_one),
-          ),
-          IconButton(
-            onPressed: () {
-              counterBloc.add(CounterDecEvent());
-            },
-            icon: const Icon(Icons.exposure_minus_1),
-          ),
-          IconButton(
-            onPressed: () {
-              final userBloc = context.read<UserBloc>();
-              userBloc
-                  .add(UserGetUsersEvent(context.read<CounterBloc>().state));
-            },
-            icon: const Icon(Icons.person),
-          ),
-          IconButton(
-            onPressed: () {
-              final userBloc = context.read<UserBloc>();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => Job(),
-                ),
-              );
-              userBloc.add(
-                  UserGetUsersJobEvent(context.read<CounterBloc>().state));
-            },
-            icon: const Icon(Icons.work),
-          ),
-        ],
+      floatingActionButton: BlocConsumer<CounterBloc, int>(
+        buildWhen: (prev, current) => prev > current,
+        listenWhen: (prev, current) => prev > current,
+        listener: (context, state) {
+          if (state == 0) {
+            Scaffold.of(context).showBottomSheet(
+                  (context) => Container(
+                color: Colors.blue,
+                width: double.infinity,
+                height: 30,
+                child: Text('State is 0'),
+              ),
+            );
+          }
+        },
+        builder: (context, state) => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(state.toString()),
+            IconButton(
+              onPressed: () {
+                counterBloc.add(CounterIncEvent());
+              },
+              icon: const Icon(Icons.plus_one),
+            ),
+            IconButton(
+              onPressed: () {
+                counterBloc.add(CounterDecEvent());
+              },
+              icon: const Icon(Icons.exposure_minus_1),
+            ),
+            IconButton(
+              onPressed: () {
+                final userBloc = context.read<UserBloc>();
+                userBloc
+                    .add(UserGetUsersEvent(context.read<CounterBloc>().state));
+              },
+              icon: const Icon(Icons.person),
+            ),
+            IconButton(
+              onPressed: () {
+                final userBloc = context.read<UserBloc>();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Job(),
+                  ),
+                );
+                userBloc.add(
+                    UserGetUsersJobEvent(context.read<CounterBloc>().state));
+              },
+              icon: const Icon(Icons.work),
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: Center(
@@ -84,7 +101,7 @@ class MyHomePage extends StatelessWidget {
                 // bloc: counterBloc,
                 builder: (context, state) {
                   final users =
-                  context.select((UserBloc bloc) => bloc.state.users);
+                      context.select((UserBloc bloc) => bloc.state.users);
                   return Column(
                     children: [
                       Text(state.toString(), style: TextStyle(fontSize: 33)),
