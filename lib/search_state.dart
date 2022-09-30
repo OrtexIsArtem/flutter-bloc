@@ -1,7 +1,7 @@
 part of 'search_bloc.dart';
 
 class SearchState {
-  final List users;
+  final List<UserModel> users;
 
   SearchState({
     this.users = const [],

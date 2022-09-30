@@ -33,11 +33,9 @@ dependencies:
   stream_transform: ^2.0.0
   flutter:
     sdk: flutter
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  search_user_repository:
+    path: packages/search_user_repository
 
 dev_dependencies:
   flutter_test:
